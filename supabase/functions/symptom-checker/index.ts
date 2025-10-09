@@ -19,7 +19,7 @@ serve(async (req) => {
       throw new Error('LOVABLE_API_KEY is not configured');
     }
 
-    const systemPrompt = `You are an AI medical assistant for SmartCare, a healthcare application. Your role is to analyze symptoms and provide preliminary guidance. 
+    const systemPrompt = `You are an AI medical assistant for ClinicianAI, a healthcare application. Your role is to analyze symptoms and provide preliminary guidance. 
 
 IMPORTANT DISCLAIMERS:
 - You are NOT a replacement for professional medical advice

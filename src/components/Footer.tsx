@@ -12,7 +12,7 @@ export const Footer = () => {
                 <Heart className="h-5 w-5 text-primary-foreground" />
               </div>
               <span className="text-lg font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
-                SmartCare
+                ClinicianAI
               </span>
             </div>
             <p className="text-muted-foreground text-sm">
@@ -60,7 +60,7 @@ export const Footer = () => {
               </li>
               <li className="flex items-center gap-2">
                 <Mail className="h-4 w-4 text-primary" />
-                support@smartcare.com
+                support@clinicianai.com
               </li>
               <li className="flex items-center gap-2">
                 <MapPin className="h-4 w-4 text-primary" />
@@ -71,7 +71,7 @@ export const Footer = () => {
         </div>
 
         <div className="border-t border-border mt-8 pt-8 text-center text-sm text-muted-foreground">
-          <p>&copy; {new Date().getFullYear()} SmartCare. All rights reserved.</p>
+          <p>&copy; {new Date().getFullYear()} ClinicianAI. All rights reserved.</p>
         </div>
       </div>
     </footer>

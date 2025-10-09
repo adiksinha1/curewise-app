@@ -82,7 +82,7 @@ const Auth = () => {
             <div className="mx-auto p-3 bg-gradient-to-br from-primary to-secondary rounded-lg w-fit mb-2">
               <Heart className="h-8 w-8 text-primary-foreground" />
             </div>
-            <CardTitle className="text-2xl">Welcome to SmartCare</CardTitle>
+            <CardTitle className="text-2xl">Welcome to ClinicianAI</CardTitle>
             <CardDescription>
               Sign in to your account or create a new one to get started
             </CardDescription>

@@ -31,7 +31,7 @@ const Index = () => {
                 </span>
               </h1>
               <p className="text-lg text-muted-foreground max-w-xl">
-                Experience seamless healthcare management with SmartCare. Book appointments, 
+                Experience seamless healthcare management with ClinicianAI. Book appointments, 
                 consult specialists, and manage your health records all in one place.
               </p>
               <div className="flex flex-wrap gap-4">
@@ -68,7 +68,7 @@ const Index = () => {
       <section className="py-16 px-4 sm:px-6 lg:px-8">
         <div className="container mx-auto">
           <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">Why Choose SmartCare?</h2>
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">Why Choose ClinicianAI?</h2>
             <p className="text-muted-foreground max-w-2xl mx-auto">
               We provide comprehensive healthcare solutions designed for your convenience and peace of mind
             </p>
@@ -164,7 +164,7 @@ const Index = () => {
             <CardContent className="py-12 text-center space-y-6">
               <h2 className="text-3xl md:text-4xl font-bold">Ready to Get Started?</h2>
               <p className="text-lg opacity-90 max-w-2xl mx-auto">
-                Join thousands of patients who trust SmartCare for their healthcare needs
+                Join thousands of patients who trust ClinicianAI for their healthcare needs
               </p>
               <Link to="/auth">
                 <Button size="lg" variant="secondary" className="shadow-lg">
