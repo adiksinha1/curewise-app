@@ -40,6 +40,12 @@ const Index = () => {
                     Get Started
                   </Button>
                 </Link>
+                <Link to="/symptom-checker">
+                  <Button size="lg" variant="secondary">
+                    <Activity className="mr-2 h-5 w-5" />
+                    Check Symptoms
+                  </Button>
+                </Link>
                 <Link to="/doctors">
                   <Button size="lg" variant="outline">
                     Find Doctors

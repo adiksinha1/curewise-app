@@ -48,6 +48,9 @@ export const Navbar = () => {
             <Link to="/doctors" className="text-foreground hover:text-primary transition-colors">
               Find Doctors
             </Link>
+            <Link to="/symptom-checker" className="text-foreground hover:text-primary transition-colors">
+              Symptom Checker
+            </Link>
             <Link to="/contact" className="text-foreground hover:text-primary transition-colors">
               Contact
             </Link>
@@ -92,6 +95,13 @@ export const Navbar = () => {
               onClick={() => setIsMenuOpen(false)}
             >
               Find Doctors
+            </Link>
+            <Link
+              to="/symptom-checker"
+              className="block py-2 text-foreground hover:text-primary transition-colors"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              Symptom Checker
             </Link>
             <Link
               to="/contact"
