@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -7,10 +7,11 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Loader2, AlertTriangle, Calendar, Clock, Activity, Stethoscope } from "lucide-react";
+import { Loader2, AlertTriangle, Calendar, Clock, Activity, Stethoscope, FileText, User } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import type { User as SupabaseUser } from "@supabase/supabase-js";
 
 interface AnalysisResult {
   conditions: Array<{
@@ -29,12 +30,34 @@ interface AnalysisResult {
 const SymptomChecker = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const [user, setUser] = useState<SupabaseUser | null>(null);
+  const [hasMedicalHistory, setHasMedicalHistory] = useState(false);
   const [symptoms, setSymptoms] = useState("");
   const [duration, setDuration] = useState("");
   const [severity, setSeverity] = useState("");
   const [age, setAge] = useState("");
   const [loading, setLoading] = useState(false);
   const [analysis, setAnalysis] = useState<AnalysisResult | null>(null);
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      setUser(user);
+
+      if (user) {
+        // Check if user has medical history
+        const { data } = await supabase
+          .from('patient_medical_history')
+          .select('id')
+          .eq('patient_id', user.id)
+          .single();
+        
+        setHasMedicalHistory(!!data);
+      }
+    };
+
+    fetchUser();
+  }, []);
 
   const getSeverityColor = (severity: string) => {
     switch (severity.toLowerCase()) {
@@ -63,8 +86,14 @@ const SymptomChecker = () => {
     setAnalysis(null);
 
     try {
+      // Get the session to pass auth header
+      const { data: { session } } = await supabase.auth.getSession();
+      
       const { data, error } = await supabase.functions.invoke('symptom-checker', {
-        body: { symptoms, duration, severity, age }
+        body: { symptoms, duration, severity, age },
+        headers: session ? {
+          Authorization: `Bearer ${session.access_token}`
+        } : undefined
       });
 
       if (error) throw error;
@@ -85,6 +114,11 @@ const SymptomChecker = () => {
           title: "⚠️ Urgent Care Needed",
           description: "Your symptoms may require immediate medical attention",
           variant: "destructive",
+        });
+      } else if (user && hasMedicalHistory) {
+        toast({
+          title: "Analysis Complete",
+          description: "Your medical history was considered in this analysis",
         });
       }
     } catch (error) {
@@ -133,6 +167,52 @@ const SymptomChecker = () => {
             <p className="text-muted-foreground max-w-2xl mx-auto">
               Describe your symptoms and get preliminary guidance. Remember, this is not a substitute for professional medical advice.
             </p>
+            
+            {/* Medical History Status */}
+            {user && (
+              <div className="flex justify-center gap-3">
+                {hasMedicalHistory ? (
+                  <Alert className="border-green-200 bg-green-50 max-w-md">
+                    <FileText className="h-4 w-4 text-green-600" />
+                    <AlertDescription className="text-green-700">
+                      Your medical history will be used for more accurate analysis
+                    </AlertDescription>
+                  </Alert>
+                ) : (
+                  <Alert className="border-blue-200 bg-blue-50 max-w-md">
+                    <User className="h-4 w-4 text-blue-600" />
+                    <AlertDescription className="text-blue-700 flex items-center justify-between">
+                      <span>Add your medical history for better results</span>
+                      <Button 
+                        size="sm" 
+                        variant="link" 
+                        onClick={() => navigate('/dashboard')}
+                        className="text-blue-700 underline"
+                      >
+                        Add Now
+                      </Button>
+                    </AlertDescription>
+                  </Alert>
+                )}
+              </div>
+            )}
+
+            {!user && (
+              <Alert className="border-blue-200 bg-blue-50 max-w-md mx-auto">
+                <User className="h-4 w-4 text-blue-600" />
+                <AlertDescription className="text-blue-700 flex items-center justify-between">
+                  <span>Sign in to save your results and get personalized analysis</span>
+                  <Button 
+                    size="sm" 
+                    variant="link" 
+                    onClick={() => navigate('/auth')}
+                    className="text-blue-700 underline"
+                  >
+                    Sign In
+                  </Button>
+                </AlertDescription>
+              </Alert>
+            )}
             
             <Alert className="border-yellow-200 bg-yellow-50">
               <AlertTriangle className="h-4 w-4 text-yellow-600" />

@@ -6,7 +6,7 @@ import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Calendar, Clock, User as UserIcon, Plus, Activity } from "lucide-react";
+import { Calendar, Clock, User as UserIcon, Plus, Activity, FileText } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const PatientDashboard = () => {
@@ -122,6 +122,12 @@ const PatientDashboard = () => {
                 <CardTitle>Quick Actions</CardTitle>
               </CardHeader>
               <CardContent className="space-y-3">
+                <Link to="/medical-history">
+                  <Button className="w-full justify-start" variant="outline">
+                    <FileText className="h-4 w-4 mr-2" />
+                    Medical History
+                  </Button>
+                </Link>
                 <Link to="/symptom-checker">
                   <Button className="w-full justify-start" variant="outline">
                     <Activity className="h-4 w-4 mr-2" />

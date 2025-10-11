@@ -14,16 +14,264 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      appointments: {
+        Row: {
+          appointment_date: string
+          created_at: string | null
+          diagnosis: string | null
+          doctor_id: string | null
+          follow_up_date: string | null
+          id: string
+          notes: string | null
+          patient_id: string
+          prescription: string | null
+          reason: string
+          status: string
+          updated_at: string | null
+        }
+        Insert: {
+          appointment_date: string
+          created_at?: string | null
+          diagnosis?: string | null
+          doctor_id?: string | null
+          follow_up_date?: string | null
+          id?: string
+          notes?: string | null
+          patient_id: string
+          prescription?: string | null
+          reason: string
+          status?: string
+          updated_at?: string | null
+        }
+        Update: {
+          appointment_date?: string
+          created_at?: string | null
+          diagnosis?: string | null
+          doctor_id?: string | null
+          follow_up_date?: string | null
+          id?: string
+          notes?: string | null
+          patient_id?: string
+          prescription?: string | null
+          reason?: string
+          status?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      doctor_credentials: {
+        Row: {
+          bio: string | null
+          certifications: string[] | null
+          created_at: string | null
+          id: string
+          languages: string[] | null
+          license_number: string
+          medical_school: string | null
+          specialization: string
+          updated_at: string | null
+          user_id: string
+          verified: boolean | null
+          years_of_experience: number
+        }
+        Insert: {
+          bio?: string | null
+          certifications?: string[] | null
+          created_at?: string | null
+          id?: string
+          languages?: string[] | null
+          license_number: string
+          medical_school?: string | null
+          specialization: string
+          updated_at?: string | null
+          user_id: string
+          verified?: boolean | null
+          years_of_experience: number
+        }
+        Update: {
+          bio?: string | null
+          certifications?: string[] | null
+          created_at?: string | null
+          id?: string
+          languages?: string[] | null
+          license_number?: string
+          medical_school?: string | null
+          specialization?: string
+          updated_at?: string | null
+          user_id?: string
+          verified?: boolean | null
+          years_of_experience?: number
+        }
+        Relationships: []
+      }
+      patient_medical_history: {
+        Row: {
+          alcohol_consumption: string | null
+          allergies: string[] | null
+          blood_type: string | null
+          chronic_conditions: string[] | null
+          created_at: string | null
+          current_medications: string[] | null
+          exercise_frequency: string | null
+          family_history: string[] | null
+          height_cm: number | null
+          id: string
+          past_surgeries: string[] | null
+          patient_id: string
+          smoking_status: string | null
+          updated_at: string | null
+          weight_kg: number | null
+        }
+        Insert: {
+          alcohol_consumption?: string | null
+          allergies?: string[] | null
+          blood_type?: string | null
+          chronic_conditions?: string[] | null
+          created_at?: string | null
+          current_medications?: string[] | null
+          exercise_frequency?: string | null
+          family_history?: string[] | null
+          height_cm?: number | null
+          id?: string
+          past_surgeries?: string[] | null
+          patient_id: string
+          smoking_status?: string | null
+          updated_at?: string | null
+          weight_kg?: number | null
+        }
+        Update: {
+          alcohol_consumption?: string | null
+          allergies?: string[] | null
+          blood_type?: string | null
+          chronic_conditions?: string[] | null
+          created_at?: string | null
+          current_medications?: string[] | null
+          exercise_frequency?: string | null
+          family_history?: string[] | null
+          height_cm?: number | null
+          id?: string
+          past_surgeries?: string[] | null
+          patient_id?: string
+          smoking_status?: string | null
+          updated_at?: string | null
+          weight_kg?: number | null
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          address: string | null
+          created_at: string | null
+          date_of_birth: string | null
+          email: string
+          full_name: string
+          gender: string | null
+          id: string
+          phone: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          address?: string | null
+          created_at?: string | null
+          date_of_birth?: string | null
+          email: string
+          full_name: string
+          gender?: string | null
+          id: string
+          phone?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          address?: string | null
+          created_at?: string | null
+          date_of_birth?: string | null
+          email?: string
+          full_name?: string
+          gender?: string | null
+          id?: string
+          phone?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      symptom_checks: {
+        Row: {
+          age_range: string | null
+          ai_analysis: Json
+          conditions_identified: string[] | null
+          created_at: string | null
+          duration: string | null
+          id: string
+          is_emergency: boolean | null
+          severity: string | null
+          severity_level: string | null
+          symptoms: string
+          user_id: string
+        }
+        Insert: {
+          age_range?: string | null
+          ai_analysis: Json
+          conditions_identified?: string[] | null
+          created_at?: string | null
+          duration?: string | null
+          id?: string
+          is_emergency?: boolean | null
+          severity?: string | null
+          severity_level?: string | null
+          symptoms: string
+          user_id: string
+        }
+        Update: {
+          age_range?: string | null
+          ai_analysis?: Json
+          conditions_identified?: string[] | null
+          created_at?: string | null
+          duration?: string | null
+          id?: string
+          is_emergency?: boolean | null
+          severity?: string | null
+          severity_level?: string | null
+          symptoms?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      user_roles: {
+        Row: {
+          created_at: string | null
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "doctor" | "patient"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +398,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["doctor", "patient"],
+    },
   },
 } as const
