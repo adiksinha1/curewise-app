@@ -2,3 +2,9 @@ project_id = "rfgdrycbsyspcpobjakv"
 
 [functions.symptom-checker]
 verify_jwt = false
+
+[functions.chat-support]
+verify_jwt = false
+
+[functions.generate-prescription-pdf]
+verify_jwt = true

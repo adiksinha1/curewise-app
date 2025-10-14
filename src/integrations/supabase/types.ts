@@ -158,6 +158,48 @@ export type Database = {
         }
         Relationships: []
       }
+      prescriptions: {
+        Row: {
+          advice: string | null
+          created_at: string
+          diagnosis: string
+          doctor_id: string
+          id: string
+          medicines: Json
+          patient_age: number
+          patient_id: string
+          patient_name: string
+          prescription_date: string
+          updated_at: string
+        }
+        Insert: {
+          advice?: string | null
+          created_at?: string
+          diagnosis: string
+          doctor_id: string
+          id?: string
+          medicines: Json
+          patient_age: number
+          patient_id: string
+          patient_name: string
+          prescription_date?: string
+          updated_at?: string
+        }
+        Update: {
+          advice?: string | null
+          created_at?: string
+          diagnosis?: string
+          doctor_id?: string
+          id?: string
+          medicines?: Json
+          patient_age?: number
+          patient_id?: string
+          patient_name?: string
+          prescription_date?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           address: string | null

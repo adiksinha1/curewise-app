@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { supabase } from "@/integrations/supabase/client";
+import { useNavigate, Link } from "react-router-dom";
 import { User } from "@supabase/supabase-js";
+import { supabase } from "@/integrations/supabase/client";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Calendar, Clock, User as UserIcon, Plus, Activity, FileText } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Calendar, Clock, User as UserIcon, Plus, Activity, FileText, Pill } from "lucide-react";
+import { Label } from "@/components/ui/label";
 
 const PatientDashboard = () => {
   const [user, setUser] = useState<User | null>(null);
@@ -134,6 +134,12 @@ const PatientDashboard = () => {
                     Symptom Checker
                   </Button>
                 </Link>
+                <Link to="/my-prescriptions">
+                  <Button className="w-full justify-start" variant="outline">
+                    <Pill className="h-4 w-4 mr-2" />
+                    My Prescriptions
+                  </Button>
+                </Link>
                 <Link to="/book-appointment">
                   <Button className="w-full justify-start" variant="outline">
                     <Plus className="h-4 w-4 mr-2" />
@@ -181,9 +187,5 @@ const PatientDashboard = () => {
     </div>
   );
 };
-
-const Label = ({ className, children }: { className?: string; children: React.ReactNode }) => (
-  <label className={className}>{children}</label>
-);
 
 export default PatientDashboard;

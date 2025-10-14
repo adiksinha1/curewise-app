@@ -12,6 +12,10 @@ import BookAppointment from "./pages/BookAppointment";
 import Contact from "./pages/Contact";
 import SymptomChecker from "./pages/SymptomChecker";
 import MedicalHistory from "./pages/MedicalHistory";
+import CreatePrescription from "./pages/CreatePrescription";
+import PrescriptionView from "./pages/PrescriptionView";
+import MyPrescriptions from "./pages/MyPrescriptions";
+import VerifyPrescription from "./pages/VerifyPrescription";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -30,6 +34,10 @@ const App = () => (
           <Route path="/book-appointment" element={<BookAppointment />} />
           <Route path="/symptom-checker" element={<SymptomChecker />} />
           <Route path="/medical-history" element={<MedicalHistory />} />
+          <Route path="/create-prescription" element={<CreatePrescription />} />
+          <Route path="/prescription/:id" element={<PrescriptionView />} />
+          <Route path="/my-prescriptions" element={<MyPrescriptions />} />
+          <Route path="/verify" element={<VerifyPrescription />} />
           <Route path="/contact" element={<Contact />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
