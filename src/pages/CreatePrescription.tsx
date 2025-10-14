@@ -30,6 +30,8 @@ const CreatePrescription = () => {
     advice: "",
   });
   
+  const [patients, setPatients] = useState<any[]>([]);
+  
   const [medicines, setMedicines] = useState<Medicine[]>([{ name: "", dosage: "" }]);
 
   useEffect(() => {
@@ -62,6 +64,27 @@ const CreatePrescription = () => {
     }
 
     setUser(user);
+    
+    // Fetch patients from appointments
+    const { data: appointmentsData } = await supabase
+      .from("appointments")
+      .select(`
+        patient_id
+      `)
+      .eq("doctor_id", user.id);
+
+    if (appointmentsData) {
+      const patientIds = [...new Set(appointmentsData.map(a => a.patient_id))];
+      
+      const { data: profilesData } = await supabase
+        .from("profiles")
+        .select("id, full_name, email, date_of_birth")
+        .in("id", patientIds);
+        
+      if (profilesData) {
+        setPatients(profilesData);
+      }
+    }
   };
 
   const addMedicine = () => {
@@ -89,15 +112,9 @@ const CreatePrescription = () => {
         throw new Error("Please add at least one medicine");
       }
 
-      // Find patient by name
-      const { data: patientData, error: patientError } = await supabase
-        .from("profiles")
-        .select("id")
-        .eq("full_name", formData.patientName)
-        .single();
-
-      if (patientError || !patientData) {
-        throw new Error("Patient not found. Please ensure the patient name matches their profile.");
+      // Validate patient selection
+      if (!formData.patientId) {
+        throw new Error("Please select a patient");
       }
 
       // Create prescription
@@ -105,7 +122,7 @@ const CreatePrescription = () => {
         .from("prescriptions")
         .insert([{
           doctor_id: user.id,
-          patient_id: patientData.id,
+          patient_id: formData.patientId,
           patient_name: formData.patientName,
           patient_age: parseInt(formData.patientAge),
           diagnosis: formData.diagnosis,
@@ -152,18 +169,39 @@ const CreatePrescription = () => {
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-6">
-              {/* Patient Information */}
+              {/* Patient Selection */}
               <div className="space-y-4">
                 <h3 className="text-lg font-semibold">Patient Information</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <Label htmlFor="patientName">Patient Name</Label>
-                    <Input
-                      id="patientName"
-                      value={formData.patientName}
-                      onChange={(e) => setFormData({ ...formData, patientName: e.target.value })}
+                    <Label htmlFor="patientSelect">Select Patient</Label>
+                    <select
+                      id="patientSelect"
+                      className="w-full p-2 border rounded-md"
+                      value={formData.patientId}
+                      onChange={(e) => {
+                        const selectedPatient = patients.find(p => p.id === e.target.value);
+                        if (selectedPatient) {
+                          const age = selectedPatient.date_of_birth 
+                            ? Math.floor((new Date().getTime() - new Date(selectedPatient.date_of_birth).getTime()) / (1000 * 60 * 60 * 24 * 365))
+                            : "";
+                          setFormData({ 
+                            ...formData, 
+                            patientId: selectedPatient.id,
+                            patientName: selectedPatient.full_name,
+                            patientAge: age.toString()
+                          });
+                        }
+                      }}
                       required
-                    />
+                    >
+                      <option value="">Choose a patient</option>
+                      {patients.map((patient) => (
+                        <option key={patient.id} value={patient.id}>
+                          {patient.full_name} ({patient.email})
+                        </option>
+                      ))}
+                    </select>
                   </div>
                   <div>
                     <Label htmlFor="patientAge">Age</Label>
