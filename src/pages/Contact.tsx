@@ -8,6 +8,13 @@ import { Textarea } from "@/components/ui/textarea";
 import { Mail, Phone, MapPin, Clock } from "lucide-react";
 import { toast } from "sonner";
 import { useState } from "react";
+import { z } from "zod";
+
+const contactSchema = z.object({
+  name: z.string().trim().min(1, "Name is required").max(100, "Name must be less than 100 characters"),
+  email: z.string().trim().email("Invalid email address").max(255, "Email must be less than 255 characters"),
+  message: z.string().trim().min(10, "Message must be at least 10 characters").max(1000, "Message must be less than 1000 characters")
+});
 
 const Contact = () => {
   const [formData, setFormData] = useState({
@@ -18,6 +25,17 @@ const Contact = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Validate form data
+    const result = contactSchema.safeParse(formData);
+    
+    if (!result.success) {
+      const errors = result.error.errors;
+      toast.error(errors[0].message);
+      return;
+    }
+    
+    // Form is valid, proceed with submission
     toast.success("Message sent! We'll get back to you soon.");
     setFormData({ name: "", email: "", message: "" });
   };
