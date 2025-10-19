@@ -61,6 +61,19 @@ export const SupportChatbot = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
+  useEffect(() => {
+    const handleSpeechError = (event: any) => {
+      toast({
+        title: 'Speech Recognition Error',
+        description: event.detail,
+        variant: 'destructive',
+      });
+    };
+
+    window.addEventListener('speech-error', handleSpeechError);
+    return () => window.removeEventListener('speech-error', handleSpeechError);
+  }, [toast]);
+
   const handleSend = async () => {
     if (!input.trim() || isLoading) return;
 
@@ -252,7 +265,15 @@ export const SupportChatbot = () => {
           </div>
         </div>
         {isListening && (
-          <p className="text-xs text-muted-foreground mt-2">Listening...</p>
+          <p className="text-xs text-muted-foreground mt-2 flex items-center gap-2">
+            <span className="inline-block w-2 h-2 bg-red-500 rounded-full animate-pulse"></span>
+            Listening... Speak now
+          </p>
+        )}
+        {!isSpeechSupported && (
+          <p className="text-xs text-muted-foreground mt-2">
+            Speech recognition not supported in this browser
+          </p>
         )}
       </div>
     </Card>
