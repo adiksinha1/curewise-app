@@ -17,6 +17,7 @@ export type Database = {
       appointments: {
         Row: {
           appointment_date: string
+          cancelled_at: string | null
           created_at: string | null
           diagnosis: string | null
           doctor_id: string | null
@@ -31,6 +32,7 @@ export type Database = {
         }
         Insert: {
           appointment_date: string
+          cancelled_at?: string | null
           created_at?: string | null
           diagnosis?: string | null
           doctor_id?: string | null
@@ -45,6 +47,7 @@ export type Database = {
         }
         Update: {
           appointment_date?: string
+          cancelled_at?: string | null
           created_at?: string | null
           diagnosis?: string | null
           doctor_id?: string | null
@@ -301,7 +304,19 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      doctor_profiles_public: {
+        Row: {
+          bio: string | null
+          email: string | null
+          full_name: string | null
+          languages: string[] | null
+          specialization: string | null
+          user_id: string | null
+          verified: boolean | null
+          years_of_experience: number | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       has_role: {
