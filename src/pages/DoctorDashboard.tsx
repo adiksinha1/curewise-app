@@ -29,6 +29,10 @@ const DoctorDashboard = () => {
         return;
       }
 
+      // SECURITY NOTE: This client-side role check is for UX only (showing/hiding UI elements).
+      // The real security is enforced server-side through RLS policies on database tables.
+      // All sensitive data access is protected by RLS policies that check user roles server-side.
+      // This check only improves user experience by routing users to appropriate dashboards.
       const { data: roleData } = await supabase
         .from("user_roles")
         .select("role")

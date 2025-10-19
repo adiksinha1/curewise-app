@@ -10,6 +10,19 @@ import { useToast } from "@/hooks/use-toast";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { Plus, Trash2, FileText } from "lucide-react";
+import { z } from "zod";
+
+const prescriptionSchema = z.object({
+  patientId: z.string().uuid("Invalid patient ID"),
+  patientName: z.string().trim().min(1, "Patient name is required").max(100, "Name must be less than 100 characters"),
+  patientAge: z.number().int().min(0, "Age must be positive").max(150, "Age must be less than 150"),
+  diagnosis: z.string().trim().min(5, "Diagnosis must be at least 5 characters").max(500, "Diagnosis must be less than 500 characters"),
+  medicines: z.array(z.object({
+    name: z.string().trim().min(1, "Medicine name is required").max(200, "Medicine name must be less than 200 characters"),
+    dosage: z.string().trim().min(1, "Dosage is required").max(200, "Dosage must be less than 200 characters")
+  })).min(1, "At least one medicine is required"),
+  advice: z.string().max(1000, "Advice must be less than 1000 characters").optional()
+});
 
 interface Medicine {
   name: string;
@@ -45,7 +58,10 @@ const CreatePrescription = () => {
       return;
     }
 
-    // Check if user is a doctor
+    // SECURITY NOTE: This client-side role check is for UX only (showing/hiding UI).
+    // The real security is enforced server-side through RLS policies on the prescriptions table.
+    // RLS policies require has_role(auth.uid(), 'doctor') for INSERT operations, which cannot be bypassed.
+    // Never trust client-supplied role information for backend authorization.
     const { data: roleData } = await supabase
       .from("user_roles")
       .select("role")
@@ -106,16 +122,24 @@ const CreatePrescription = () => {
     setLoading(true);
 
     try {
-      // Validate medicines
-      const validMedicines = medicines.filter(m => m.name && m.dosage);
-      if (validMedicines.length === 0) {
-        throw new Error("Please add at least one medicine");
+      // Validate form data using zod schema
+      const validationData = {
+        patientId: formData.patientId,
+        patientName: formData.patientName,
+        patientAge: parseInt(formData.patientAge) || 0,
+        diagnosis: formData.diagnosis,
+        medicines: medicines.filter(m => m.name.trim() && m.dosage.trim()),
+        advice: formData.advice || undefined
+      };
+
+      const result = prescriptionSchema.safeParse(validationData);
+      
+      if (!result.success) {
+        const errors = result.error.errors;
+        throw new Error(errors[0].message);
       }
 
-      // Validate patient selection
-      if (!formData.patientId) {
-        throw new Error("Please select a patient");
-      }
+      const validMedicines = result.data.medicines;
 
       // Create prescription
       const { data: prescription, error: prescError } = await supabase
