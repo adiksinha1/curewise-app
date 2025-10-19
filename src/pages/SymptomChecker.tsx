@@ -82,6 +82,17 @@ const SymptomChecker = () => {
       return;
     }
 
+    // Require authentication
+    if (!user) {
+      toast({
+        title: "Authentication Required",
+        description: "Please sign in to use the symptom checker",
+        variant: "destructive",
+      });
+      navigate('/auth');
+      return;
+    }
+
     setLoading(true);
     setAnalysis(null);
 
@@ -90,10 +101,7 @@ const SymptomChecker = () => {
       const { data: { session } } = await supabase.auth.getSession();
       
       const { data, error } = await supabase.functions.invoke('symptom-checker', {
-        body: { symptoms, duration, severity, age },
-        headers: session ? {
-          Authorization: `Bearer ${session.access_token}`
-        } : undefined
+        body: { symptoms, duration, severity, age }
       });
 
       if (error) throw error;

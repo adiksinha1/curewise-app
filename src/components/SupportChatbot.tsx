@@ -6,7 +6,9 @@ import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { useSpeechRecognition } from '@/hooks/useSpeechRecognition';
 import { useTextToSpeech } from '@/hooks/useTextToSpeech';
-import { MessageCircle, X, Send, Mic, MicOff, Volume2, VolumeX } from 'lucide-react';
+import { MessageCircle, X, Send, Mic, MicOff, Volume2, VolumeX, LogIn } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import type { User } from '@supabase/supabase-js';
 
 interface Message {
   role: 'user' | 'assistant';
@@ -14,7 +16,9 @@ interface Message {
 }
 
 export const SupportChatbot = () => {
+  const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
+  const [user, setUser] = useState<User | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -34,6 +38,20 @@ export const SupportChatbot = () => {
   const { speak, stop, isSpeaking, isSupported: isTTSSupported } = useTextToSpeech();
 
   useEffect(() => {
+    const fetchUser = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      setUser(user);
+    };
+    fetchUser();
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  useEffect(() => {
     if (transcript) {
       setInput(transcript);
     }
@@ -45,6 +63,15 @@ export const SupportChatbot = () => {
 
   const handleSend = async () => {
     if (!input.trim() || isLoading) return;
+
+    if (!user) {
+      toast({
+        title: 'Authentication Required',
+        description: 'Please sign in to use the chat support',
+        variant: 'destructive',
+      });
+      return;
+    }
 
     const userMessage: Message = { role: 'user', content: input };
     setMessages(prev => [...prev, userMessage]);
@@ -135,12 +162,21 @@ export const SupportChatbot = () => {
       </div>
 
       <div className="flex-1 overflow-y-auto p-4 space-y-4">
-        {messages.length === 0 && (
+        {!user ? (
+          <div className="text-center text-muted-foreground space-y-4">
+            <p>Hello! I'm your healthcare assistant.</p>
+            <p className="mt-2">Please sign in to start chatting.</p>
+            <Button onClick={() => navigate('/auth')} className="mt-4">
+              <LogIn className="mr-2 h-4 w-4" />
+              Sign In
+            </Button>
+          </div>
+        ) : messages.length === 0 ? (
           <div className="text-center text-muted-foreground">
             <p>Hello! I'm your healthcare assistant.</p>
             <p className="mt-2">How can I help you today?</p>
           </div>
-        )}
+        ) : null}
         
         {messages.map((message, index) => (
           <div
